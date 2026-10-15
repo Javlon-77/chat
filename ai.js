@@ -1,6 +1,4 @@
-/* AQLLI CHAT — Grok AI moduli
-   API kalitini bu faylga yozmang: GitHub Pages'dagi ochiq JavaScript hammaga ko'rinadi.
-*/
+apiKey = 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
 (function () {
   "use strict";
 
