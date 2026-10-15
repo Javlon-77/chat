@@ -28,8 +28,8 @@
   </aside>
   <main class="main">
     <header class="topbar">
-      <div><div class="top-title">AQLLI CHAT</div><div class="online">● Tayyor</div></div>
-      <button class="iconbtn" id="clearBtn" title="Joriy chatni tozalash">⌫ Tozalash</button>
+      <div><div class="top-title">AQLLI CHAT</div><div class="online" id="statusText">● Tayyor</div></div>
+      <div style="display:flex;gap:8px"><button class="iconbtn" id="grokKeyBtn" title="Grok API kalitini ulash">✦ Grok ulash</button><button class="iconbtn" id="clearBtn" title="Joriy chatni tozalash">⌫ Tozalash</button></div>
     </header>
     <section class="messages" id="messages">
       <div class="welcome" id="welcome">
@@ -96,12 +96,52 @@ function render(){
   });
   messages.scrollTop=messages.scrollHeight;
 }
-function sendMessage(){
+let grokKey = sessionStorage.getItem("aqlli-chat-grok-key") || "";
+function setStatus(text){ const el=$("#statusText"); if(el)el.textContent=text; }
+$("#grokKeyBtn").addEventListener("click",()=>{
+  const value=prompt("Grok API kalitingizni kiriting. Kalit GitHub'ga yozilmaydi; faqat shu brauzer sessiyasida saqlanadi. Uni boshqa odamlar bilan ulashmang.");
+  if(value===null)return;
+  if(!value.trim()){grokKey="";sessionStorage.removeItem("aqlli-chat-grok-key");setStatus("● Grok ulanmagan");alert("Kalit olib tashlandi.");return;}
+  grokKey=value.trim();sessionStorage.setItem("aqlli-chat-grok-key",grokKey);
+  setStatus("● Grok kaliti kiritildi");alert("Kalit shu brauzer sessiyasida saqlandi. Endi savol yuboring.");
+});
+async function sendMessage(){
   const text=input.value.trim(); if(!text)return;
   if(!current()) newChat();
   const c=current(); c.messages.push({role:"user",text,time:Date.now()});
   if(c.title==="Yangi suhbat") c.title=text.slice(0,32)+(text.length>32?"…":"");
   save(); input.value=""; input.style.height="auto"; render();
+  if(!grokKey){
+    c.messages.push({role:"assistant",text:"Bu GitHub Pages versiyasida Grok javoblari uchun avval yuqoridagi “✦ Grok ulash” tugmasini bosib API kalitingizni kiriting. Kalitni HTML faylga yoki GitHub repository'ga yozmang.",time:Date.now()});
+    save();render();return;
+  }
+  const waiting={role:"assistant",text:"Grok o‘ylayapti…",time:Date.now(),pending:true};
+  c.messages.push(waiting);render();setStatus("● Grok javob bermoqda…");
+  try{
+    const response=await fetch("https://api.x.ai/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+grokKey},
+      body:JSON.stringify({
+        model:"grok-3-mini",
+        messages:[
+          {role:"system",content:"Sen AQLLI CHAT nomli foydali AI yordamchisan. Foydalanuvchiga o‘zbek tilida, tushunarli va aniq javob ber. Kod so‘ralsa kodni to‘liq ber."},
+          ...c.messages.filter(m=>!m.pending).map(m=>({role:m.role,content:m.text}))
+        ],
+        temperature:0.7
+      })
+    });
+    const data=await response.json();
+    if(!response.ok) throw new Error(data?.error?.message||("API xatosi: "+response.status));
+    const answer=data?.choices?.[0]?.message?.content;
+    if(!answer) throw new Error("Grok bo‘sh javob qaytardi.");
+    const idx=c.messages.indexOf(waiting);
+    if(idx>=0)c.messages.splice(idx,1);
+    c.messages.push({role:"assistant",text:answer,time:Date.now()});
+  }catch(err){
+    const idx=c.messages.indexOf(waiting);if(idx>=0)c.messages.splice(idx,1);
+    c.messages.push({role:"assistant",text:"Grok bilan ulanishda xatolik: "+err.message+"\n\nAgar xato CORS bo‘lsa, GitHub Pages'dan to‘g‘ridan-to‘g‘ri API chaqiruviga ruxsat berilmagan bo‘lishi mumkin. Bunday holatda API kalitini oshkor qilmaydigan backend/serverless xizmat kerak bo‘ladi.",time:Date.now()});
+  }
+  save();render();setStatus(grokKey?"● Grok tayyor":"● Tayyor");
 }
 $("#chatForm").addEventListener("submit",e=>{e.preventDefault();sendMessage();});
 input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}});
