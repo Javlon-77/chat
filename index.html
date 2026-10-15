@@ -12,9 +12,11 @@
 .brand{display:flex;align-items:center;gap:10px;padding:3px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);display:grid;place-items:center;font-size:22px;box-shadow:0 8px 28px #5145cd44}.brand h1{font-size:16px;margin:0}.brand small{color:var(--muted)}
 .newchat{border:1px solid #655cf2;background:#5548e8;color:white;padding:12px;border-radius:12px;font-weight:700;cursor:pointer}.history-title{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);padding:4px 3px}.history{overflow:auto;display:flex;flex-direction:column;gap:6px}.history-item{border:0;background:transparent;color:#dbe4ff;text-align:left;padding:10px;border-radius:10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-item:hover,.history-item.active{background:var(--panel2)}.side-note{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
 .main{flex:1;min-width:0;border:1px solid var(--line);border-radius:20px;background:#0b1020d9;display:flex;flex-direction:column;overflow:hidden}.topbar{height:66px;flex-shrink:0;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#11182bcc}.top-title{font-weight:700}.online{font-size:12px;color:#86efac;margin-top:3px}.iconbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;cursor:pointer}
+.top-actions{display:flex;align-items:center;gap:8px}.key-entry{display:flex;gap:6px;align-items:center}.key-entry input{width:220px;max-width:24vw;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--text);outline:none}.key-entry input:focus{border-color:#8177ff}.key-entry input::placeholder{color:var(--muted)}
+
 .messages{flex:1;overflow-y:auto;padding:28px clamp(14px,4vw,48px);display:flex;flex-direction:column;gap:22px;scroll-behavior:smooth}.welcome{margin:auto;text-align:center;max-width:570px;padding:22px}.welcome-icon{font-size:48px;margin-bottom:10px}.welcome h2{font-size:clamp(25px,4vw,36px);margin:0 0 10px;letter-spacing:-1px}.welcome p{color:var(--muted);line-height:1.7}.prompts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:24px}.prompt{background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:13px;color:#dbe4ff;text-align:left;cursor:pointer}.prompt:hover{border-color:#8177ff;background:#191f3d}
 .msg{display:flex;gap:11px;align-items:flex-start;max-width:100%}.msg.user{flex-direction:row-reverse}.avatar{width:34px;height:34px;flex-shrink:0;border-radius:12px;background:#202b46;display:grid;place-items:center}.msg.user .avatar{background:#5145cd}.content{max-width:min(760px,88%);min-width:0}.speaker{font-size:12px;color:var(--muted);margin:2px 4px 7px}.msg.user .speaker{text-align:right}.bubble{padding:13px 16px;border-radius:4px 16px 16px 16px;background:#141d32;border:1px solid #26334f;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user .bubble{background:#4e46c8;border-color:#6960e5;border-radius:16px 4px 16px 16px}.meta{font-size:11px;color:#7f8cac;margin:6px 4px 0}.composer-wrap{padding:12px clamp(12px,4vw,40px) 16px;border-top:1px solid var(--line);background:#0d1425}.composer{display:flex;gap:10px;align-items:flex-end;background:#141d32;border:1px solid #34415f;border-radius:17px;padding:9px}.composer:focus-within{border-color:#8177ff;box-shadow:0 0 0 3px #7c6cff18}.composer textarea{flex:1;resize:none;max-height:180px;min-height:42px;background:transparent;border:0;outline:0;color:var(--text);padding:10px;font:inherit;line-height:1.5}.send{width:44px;height:44px;flex-shrink:0;border:0;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:white;font-size:20px;cursor:pointer}.disclaimer{text-align:center;font-size:11px;color:#7785a3;padding-top:8px}
-@media(max-width:700px){.app{padding:0;height:100dvh;gap:0}.sidebar{display:none}.main{border-radius:0;border:0}.topbar{height:60px;padding:0 14px}.messages{padding:20px 13px}.prompts{grid-template-columns:1fr}.welcome{padding:12px}.content{max-width:88%}.composer-wrap{padding:10px 10px 12px}}
+@media(max-width:700px){.top-actions{gap:5px}.key-entry input{width:135px;max-width:34vw}.key-entry .iconbtn{padding:9px 7px;font-size:12px}.app{padding:0;height:100dvh;gap:0}.sidebar{display:none}.main{border-radius:0;border:0}.topbar{height:60px;padding:0 14px}.messages{padding:20px 13px}.prompts{grid-template-columns:1fr}.welcome{padding:12px}.content{max-width:88%}.composer-wrap{padding:10px 10px 12px}}
 </style>
 </head>
 <body>
@@ -29,7 +31,7 @@
   <main class="main">
     <header class="topbar">
       <div><div class="top-title">AQLLI CHAT</div><div class="online" id="statusText">● Tayyor</div></div>
-      <div style="display:flex;gap:8px"><button class="iconbtn" id="grokKeyBtn" title="Grok API kalitini ulash">✦ Grok ulash</button><button class="iconbtn" id="clearBtn" title="Joriy chatni tozalash">⌫ Tozalash</button></div>
+      <div class="top-actions"><div class="key-entry"><input id="grokKeyInput" type="password" autocomplete="off" placeholder="Grok API kalitini kiriting" aria-label="Grok API kaliti"><button class="iconbtn" id="saveGrokKeyBtn" type="button">Kalitni saqlash</button></div><button class="iconbtn" id="clearBtn" title="Joriy chatni tozalash">⌫ Tozalash</button></div>
     </header>
     <section class="messages" id="messages">
       <div class="welcome" id="welcome">
@@ -98,13 +100,14 @@ function render(){
   messages.scrollTop=messages.scrollHeight;
 }
 let grokKey = sessionStorage.getItem("aqlli-chat-grok-key") || "";
+const grokKeyInput = $("#grokKeyInput");
+if(grokKeyInput && grokKey) grokKeyInput.value=grokKey;
 function setStatus(text){ const el=$("#statusText"); if(el)el.textContent=text; }
-$("#grokKeyBtn").addEventListener("click",()=>{
-  const value=prompt("Grok API kalitingizni kiriting. Kalit GitHub'ga yozilmaydi; faqat shu brauzer sessiyasida saqlanadi. Uni boshqa odamlar bilan ulashmang.");
-  if(value===null)return;
-  if(!value.trim()){grokKey="";sessionStorage.removeItem("aqlli-chat-grok-key");setStatus("● Grok ulanmagan");alert("Kalit olib tashlandi.");return;}
-  grokKey=value.trim();sessionStorage.setItem("aqlli-chat-grok-key",grokKey);
-  setStatus("● Grok kaliti kiritildi");alert("Kalit shu brauzer sessiyasida saqlandi. Endi savol yuboring.");
+$("#saveGrokKeyBtn").addEventListener("click",()=>{
+  const value=grokKeyInput.value.trim();
+  if(!value){grokKey="";sessionStorage.removeItem("aqlli-chat-grok-key");setStatus("● Grok ulanmagan");alert("API kaliti maydoni bo‘sh. Eski kalit olib tashlandi.");return;}
+  grokKey=value;sessionStorage.setItem("aqlli-chat-grok-key",grokKey);
+  setStatus("● Grok kaliti saqlandi");alert("Kalit shu brauzer sessiyasida saqlandi. Endi savol yuboring.");
 });
 async function sendMessage(){
   const text=input.value.trim(); if(!text)return;
