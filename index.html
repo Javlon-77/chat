@@ -1,143 +1,118 @@
-
 <!DOCTYPE html>
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simple Chat</title>
+<meta name="theme-color" content="#0b1020">
+<title>AQLLI CHAT</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#0b1120;color:#fff;height:100vh;display:flex;align-items:center;justify-content:center}
-.chat{width:100%;max-width:750px;height:95vh;max-height:850px;background:#111827;border:1px solid #263247;border-radius:18px;display:flex;flex-direction:column;overflow:hidden}
-header{padding:18px 22px;background:#172033;border-bottom:1px solid #263247;display:flex;align-items:center;gap:12px}
-.logo{width:43px;height:43px;background:#6366f1;border-radius:14px;display:grid;place-items:center;font-size:22px}
-header h2{margin:0;font-size:19px}
-.status{color:#4ade80;font-size:12px;margin-top:5px}
-#messages{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px}
-.welcome{text-align:center;margin:auto;color:#94a3b8;line-height:1.8}
-.welcome .big{font-size:48px}
-.message{max-width:80%;align-self:flex-start}
-.message.mine{align-self:flex-end}
-.name{font-size:12px;color:#a5b4fc;margin:0 0 6px 5px}
-.bubble{padding:12px 15px;border-radius:15px;background:#263247;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.5}
-.mine .bubble{background:#4f46e5;border-bottom-right-radius:4px}
-.message:not(.mine) .bubble{border-bottom-left-radius:4px}
-.time{text-align:right;font-size:10px;color:#cbd5e1;margin-top:5px}
-form{display:flex;gap:10px;padding:16px;border-top:1px solid #263247;background:#172033}
-input{min-width:0;flex:1;padding:14px;border:1px solid #334155;border-radius:12px;background:#0b1120;color:white;outline:none;font-size:15px}
-input:focus{border-color:#818cf8}
-button{border:0;border-radius:12px;background:#6366f1;color:white;padding:0 20px;font-size:15px;font-weight:bold;cursor:pointer}
-button:hover{background:#4f46e5}
-.bottom{display:flex;justify-content:space-between;align-items:center;padding:0 17px 12px;background:#172033;color:#64748b;font-size:11px}
-.clear{background:transparent;color:#94a3b8;padding:5px;font-size:12px}
-@media(max-width:500px){.chat{height:100vh;max-height:none;border-radius:0;border:0}header{padding:15px}#messages{padding:15px}form{padding:12px}.message{max-width:90%}}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#11182b;--panel2:#17213a;--line:#293550;--text:#eef2ff;--muted:#9aa8c5;--accent:#7c6cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#172044 0%,var(--bg) 55%);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;height:100dvh}
+.app{height:100%;max-width:1150px;margin:auto;display:flex;padding:14px;gap:14px}.sidebar{width:245px;flex-shrink:0;background:#11182be8;border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:15px}
+.brand{display:flex;align-items:center;gap:10px;padding:3px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);display:grid;place-items:center;font-size:22px;box-shadow:0 8px 28px #5145cd44}.brand h1{font-size:16px;margin:0}.brand small{color:var(--muted)}
+.newchat{border:1px solid #655cf2;background:#5548e8;color:white;padding:12px;border-radius:12px;font-weight:700;cursor:pointer}.history-title{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);padding:4px 3px}.history{overflow:auto;display:flex;flex-direction:column;gap:6px}.history-item{border:0;background:transparent;color:#dbe4ff;text-align:left;padding:10px;border-radius:10px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.history-item:hover,.history-item.active{background:var(--panel2)}.side-note{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
+.main{flex:1;min-width:0;border:1px solid var(--line);border-radius:20px;background:#0b1020d9;display:flex;flex-direction:column;overflow:hidden}.topbar{height:66px;flex-shrink:0;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:#11182bcc}.top-title{font-weight:700}.online{font-size:12px;color:#86efac;margin-top:3px}.iconbtn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;cursor:pointer}
+.messages{flex:1;overflow-y:auto;padding:28px clamp(14px,4vw,48px);display:flex;flex-direction:column;gap:22px;scroll-behavior:smooth}.welcome{margin:auto;text-align:center;max-width:570px;padding:22px}.welcome-icon{font-size:48px;margin-bottom:10px}.welcome h2{font-size:clamp(25px,4vw,36px);margin:0 0 10px;letter-spacing:-1px}.welcome p{color:var(--muted);line-height:1.7}.prompts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:24px}.prompt{background:var(--panel);border:1px solid var(--line);padding:13px;border-radius:13px;color:#dbe4ff;text-align:left;cursor:pointer}.prompt:hover{border-color:#8177ff;background:#191f3d}
+.msg{display:flex;gap:11px;align-items:flex-start;max-width:100%}.msg.user{flex-direction:row-reverse}.avatar{width:34px;height:34px;flex-shrink:0;border-radius:12px;background:#202b46;display:grid;place-items:center}.msg.user .avatar{background:#5145cd}.content{max-width:min(760px,88%);min-width:0}.speaker{font-size:12px;color:var(--muted);margin:2px 4px 7px}.msg.user .speaker{text-align:right}.bubble{padding:13px 16px;border-radius:4px 16px 16px 16px;background:#141d32;border:1px solid #26334f;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user .bubble{background:#4e46c8;border-color:#6960e5;border-radius:16px 4px 16px 16px}.meta{font-size:11px;color:#7f8cac;margin:6px 4px 0}.composer-wrap{padding:12px clamp(12px,4vw,40px) 16px;border-top:1px solid var(--line);background:#0d1425}.composer{display:flex;gap:10px;align-items:flex-end;background:#141d32;border:1px solid #34415f;border-radius:17px;padding:9px}.composer:focus-within{border-color:#8177ff;box-shadow:0 0 0 3px #7c6cff18}.composer textarea{flex:1;resize:none;max-height:180px;min-height:42px;background:transparent;border:0;outline:0;color:var(--text);padding:10px;font:inherit;line-height:1.5}.send{width:44px;height:44px;flex-shrink:0;border:0;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);color:white;font-size:20px;cursor:pointer}.disclaimer{text-align:center;font-size:11px;color:#7785a3;padding-top:8px}
+@media(max-width:700px){.app{padding:0;height:100dvh;gap:0}.sidebar{display:none}.main{border-radius:0;border:0}.topbar{height:60px;padding:0 14px}.messages{padding:20px 13px}.prompts{grid-template-columns:1fr}.welcome{padding:12px}.content{max-width:88%}.composer-wrap{padding:10px 10px 12px}}
 </style>
 </head>
 <body>
-<div class="chat">
-  <header>
-    <div class="logo">💬</div>
-    <div>
-      <h2>Simple Chat</h2>
-      <div class="status">● Chat tayyor</div>
-    </div>
-  </header>
-
-  <main id="messages">
-    <div class="welcome" id="welcome">
-      <div class="big">💬</div>
-      <h2>Chatga xush kelibsiz!</h2>
-      <p>Pastdagi maydonga xabaringizni yozing.</p>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">💬</div><div><h1>AQLLI CHAT</h1><small>Oddiy suhbat maydoni</small></div></div>
+    <button class="newchat" id="newChat">＋ Yangi chat</button>
+    <div class="history-title">Chatlar tarixi</div>
+    <div class="history" id="history"></div>
+    <div class="side-note">Xabarlaringiz ushbu brauzerda saqlanadi.<br><br>Bu GitHub Pages uchun oddiy chat interfeysi. Boshqa odamlar bilan umumiy chat uchun server kerak.</div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><div class="top-title">AQLLI CHAT</div><div class="online">● Tayyor</div></div>
+      <button class="iconbtn" id="clearBtn" title="Joriy chatni tozalash">⌫ Tozalash</button>
+    </header>
+    <section class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">✦</div>
+        <h2>Salom! 👋</h2>
+        <p>Yangi suhbatni boshlang. Xabaringizni pastdagi maydonga yozing.</p>
+        <div class="prompts">
+          <button class="prompt">Salom! Qalaysan?</button>
+          <button class="prompt">Menga Python haqida aytib ber</button>
+          <button class="prompt">Vebsayt yaratishni nimadan boshlayman?</button>
+          <button class="prompt">Bugun qanday yangi narsa o‘rgansam bo‘ladi?</button>
+        </div>
+      </div>
+    </section>
+    <div class="composer-wrap">
+      <form class="composer" id="chatForm">
+        <textarea id="messageInput" rows="1" maxlength="4000" placeholder="Xabar yozing..." aria-label="Xabar yozing"></textarea>
+        <button class="send" id="sendBtn" type="submit" aria-label="Yuborish">➤</button>
+      </form>
+      <div class="disclaimer">Enter — yuborish · Shift + Enter — yangi qator</div>
     </div>
   </main>
-
-  <form id="chatForm">
-    <input id="messageInput" placeholder="Xabar yozing..." autocomplete="off" maxlength="2000" required>
-    <button type="submit">Yuborish ➤</button>
-  </form>
-  <div class="bottom">
-    <span>Simple Chat</span>
-    <button class="clear" id="clearBtn" type="button">🗑 Chatni tozalash</button>
-  </div>
 </div>
-
 <script>
-const form = document.getElementById("chatForm");
-const input = document.getElementById("messageInput");
-const messages = document.getElementById("messages");
-const welcome = document.getElementById("welcome");
-
-let history = [];
-try {
-  history = JSON.parse(localStorage.getItem("simple-chat-messages") || "[]");
-} catch {
-  history = [];
+const $ = (s) => document.querySelector(s);
+const input = $("#messageInput"), messages = $("#messages"), historyBox = $("#history");
+const STORE = "aqlli-chat-conversations-v1";
+let chats = [];
+let activeId = null;
+try { chats = JSON.parse(localStorage.getItem(STORE) || "[]"); } catch { chats = []; }
+function id(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(chats)); } catch(e){ alert("Brauzer xotirasi to‘ldi. Eski chatlarni o‘chirib ko‘ring."); } }
+function current(){ return chats.find(c=>c.id===activeId); }
+function newChat(){
+  const c={id:id(),title:"Yangi suhbat",messages:[],created:Date.now()};
+  chats.unshift(c); activeId=c.id; save(); render(); input.focus();
 }
-
-function renderMessage(item) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "message" + (item.mine ? " mine" : "");
-
-  const name = document.createElement("div");
-  name.className = "name";
-  name.textContent = item.mine ? "Siz" : item.name;
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = item.text;
-
-  const time = document.createElement("div");
-  time.className = "time";
-  time.textContent = item.time;
-
-  wrapper.append(name, bubble, time);
-  messages.appendChild(wrapper);
+function safeTime(ts){ return new Date(ts).toLocaleTimeString("uz-UZ",{hour:"2-digit",minute:"2-digit"}); }
+function renderHistory(){
+  historyBox.replaceChildren();
+  chats.forEach(c=>{
+    const b=document.createElement("button"); b.className="history-item"+(c.id===activeId?" active":"");
+    b.textContent="▢  "+c.title; b.title=c.title; b.onclick=()=>{activeId=c.id;render();};
+    historyBox.appendChild(b);
+  });
 }
-
-function renderAll() {
-  messages.replaceChildren();
-  if (!history.length) {
-    messages.appendChild(welcome);
-    return;
+function render(){
+  renderHistory(); messages.replaceChildren();
+  const c=current();
+  if(!c || !c.messages.length){
+    const w=document.createElement("div"); w.className="welcome";
+    w.innerHTML='<div class="welcome-icon">✦</div><h2>Salom! 👋</h2><p>Yangi suhbatni boshlang. Xabaringizni pastdagi maydonga yozing.</p><div class="prompts"><button class="prompt">Salom! Qalaysan?</button><button class="prompt">Menga Python haqida aytib ber</button><button class="prompt">Vebsayt yaratishni nimadan boshlayman?</button><button class="prompt">Bugun qanday yangi narsa o‘rgansam bo‘ladi?</button></div>';
+    w.querySelectorAll(".prompt").forEach(b=>b.onclick=()=>{input.value=b.textContent;sendMessage();});
+    messages.appendChild(w); return;
   }
-  history.forEach(renderMessage);
-  messages.scrollTop = messages.scrollHeight;
+  c.messages.forEach(m=>{
+    const row=document.createElement("article"); row.className="msg "+(m.role==="user"?"user":"");
+    const avatar=document.createElement("div"); avatar.className="avatar"; avatar.textContent=m.role==="user"?"S":"💬";
+    const content=document.createElement("div"); content.className="content";
+    const speaker=document.createElement("div"); speaker.className="speaker"; speaker.textContent=m.role==="user"?"Siz":"AQLLI CHAT";
+    const bubble=document.createElement("div"); bubble.className="bubble"; bubble.textContent=m.text;
+    const meta=document.createElement("div"); meta.className="meta"; meta.textContent=safeTime(m.time);
+    content.append(speaker,bubble,meta); row.append(avatar,content); messages.appendChild(row);
+  });
+  messages.scrollTop=messages.scrollHeight;
 }
-
-function save() {
-  localStorage.setItem("simple-chat-messages", JSON.stringify(history));
+function sendMessage(){
+  const text=input.value.trim(); if(!text)return;
+  if(!current()) newChat();
+  const c=current(); c.messages.push({role:"user",text,time:Date.now()});
+  if(c.title==="Yangi suhbat") c.title=text.slice(0,32)+(text.length>32?"…":"");
+  save(); input.value=""; input.style.height="auto"; render();
 }
-
-form.addEventListener("submit", function(event) {
-  event.preventDefault();
-  const text = input.value.trim();
-  if (!text) return;
-
-  const item = {
-    text,
-    mine: true,
-    time: new Date().toLocaleTimeString("uz-UZ", {
-      hour: "2-digit",
-      minute: "2-digit"
-    })
-  };
-
-  history.push(item);
-  save();
-  renderAll();
-  input.value = "";
-  input.focus();
-});
-
-document.getElementById("clearBtn").addEventListener("click", function() {
-  if (confirm("Chatdagi barcha xabarlarni o‘chirasizmi?")) {
-    history = [];
-    save();
-    renderAll();
-  }
-});
-
-renderAll();
+$("#chatForm").addEventListener("submit",e=>{e.preventDefault();sendMessage();});
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}});
+input.addEventListener("input",()=>{input.style.height="auto";input.style.height=Math.min(input.scrollHeight,180)+"px";});
+$("#newChat").onclick=newChat;
+$("#clearBtn").onclick=()=>{
+  if(!current())return;
+  if(confirm("Joriy suhbatni o‘chirasizmi?")){chats=chats.filter(c=>c.id!==activeId);activeId=chats[0]?.id||null;save();render();}
+};
+if(chats.length) activeId=chats[0].id; else newChat();
+render();
 </script>
 </body>
 </html>
